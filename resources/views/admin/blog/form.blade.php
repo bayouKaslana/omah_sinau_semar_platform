@@ -1,3 +1,30 @@
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<style>
+    #editorToolbar {
+        border: 1.5px solid #e2e8f0;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        background: #f8fafc;
+        padding: .5rem;
+    }
+    #editorBody {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 0 0 12px 12px;
+        background: #fff;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    #editorBody:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59,130,246,.1);
+    }
+    .ql-toolbar.ql-snow { border: none !important; }
+    .ql-container.ql-snow { border: none !important; font-size: 1rem; }
+    .ql-editor { min-height: 300px; padding: 1.2rem 1.5rem; }
+    .ql-editor p { margin-bottom: .75rem; line-height: 1.8; }
+</style>
+@endpush
 @extends('admin.layouts.app')
 @section('title', isset($blog) ? 'Edit Artikel' : 'Tambah Artikel')
 @section('page-title', isset($blog) ? 'Edit Artikel' : 'Tambah Artikel')
@@ -34,10 +61,46 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-semibold">Isi Artikel *</label>
-                    <textarea name="isi" id="isiArtikel" class="form-control @error('isi') is-invalid @enderror"
-                        rows="12">{{ old('isi', $blog->isi ?? '') }}</textarea>
-                    <small class="text-muted">Bisa menggunakan HTML tag seperti &lt;p&gt;, &lt;b&gt;, &lt;ul&gt;, &lt;li&gt; dll.</small>
-                    @error('isi')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
+                    {{-- Hidden input yang dikirim ke server --}}
+                    <input type="hidden" name="isi" id="isiInput">
+
+                    @error('isi')
+                        <div class="text-danger small mb-1">{{ $message }}</div>
+                    @enderror
+
+                    {{-- Editor toolbar --}}
+                    <div id="editorToolbar">
+                        <span class="ql-formats">
+                            <select class="ql-header">
+                                <option selected></option>
+                                <option value="1">Judul Besar</option>
+                                <option value="2">Judul Sedang</option>
+                                <option value="3">Judul Kecil</option>
+                            </select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-bold" title="Tebal"></button>
+                            <button class="ql-italic" title="Miring"></button>
+                            <button class="ql-underline" title="Garis Bawah"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-list" value="ordered" title="Daftar Bernomor"></button>
+                            <button class="ql-list" value="bullet" title="Daftar Poin"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-link" title="Link"></button>
+                            <button class="ql-blockquote" title="Kutipan"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-clean" title="Hapus Format"></button>
+                        </span>
+                    </div>
+                    <div id="editorBody" style="min-height:320px;font-size:1rem;"></div>
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Tulis artikel seperti biasa — gunakan toolbar di atas untuk format teks
+                    </small>
                 </div>
                 <div class="col-12">
                     <div class="form-check">
@@ -59,3 +122,36 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+const quill = new Quill('#editorBody', {
+    theme: 'snow',
+    modules: { toolbar: '#editorToolbar' },
+    placeholder: 'Tulis isi artikel di sini...',
+});
+
+// Load existing content saat edit
+const existing = {!! json_encode(old('isi', $blog->isi ?? '')) !!};
+if (existing) {
+    quill.root.innerHTML = existing;
+}
+
+// Sync ke hidden input sebelum form submit
+document.querySelector('form').addEventListener('submit', function() {
+    document.getElementById('isiInput').value = quill.root.innerHTML;
+});
+
+// Validasi tidak boleh kosong
+document.querySelector('form').addEventListener('submit', function(e) {
+    const val = quill.root.innerHTML.replace(/<[^>]*>/g, '').trim();
+    if (!val) {
+        e.preventDefault();
+        quill.root.style.border = '1.5px solid #ef4444';
+        quill.root.focus();
+        alert('Isi artikel tidak boleh kosong!');
+    }
+});
+</script>
+@endpush

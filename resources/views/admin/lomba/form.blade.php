@@ -20,11 +20,11 @@
                     @error('penyelenggara')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold">Kategori</label>
+                    <label class="form-label fw-semibold">Mata Pelajaran</label>
                     <select name="kategori" class="form-select">
                         <option value="">-- Pilih --</option>
-                        @foreach(['akademik','teknologi','seni','olahraga','umum'] as $k)
-                            <option value="{{ $k }}" {{ old('kategori', $lomba->kategori ?? '') === $k ? 'selected' : '' }}>{{ ucfirst($k) }}</option>
+                        @foreach(['bahasa-inggris','matematika','sains','ips','mewarnai'] as $k)
+                            <option value="{{ $k }}" {{ old('kategori', $lomba->kategori ?? '') === $k ? 'selected' : '' }}>{{ ucwords(str_replace('-', ' ', $k)) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -32,7 +32,7 @@
                     <label class="form-label fw-semibold">Tingkat</label>
                     <select name="tingkat" class="form-select">
                         <option value="">-- Pilih --</option>
-                        @foreach(['tk','sd','smp','sma','umum'] as $t)
+                        @foreach(['tk','sd','smp'] as $t)
                             <option value="{{ $t }}" {{ old('tingkat', $lomba->tingkat ?? '') === $t ? 'selected' : '' }}>{{ strtoupper($t) }}</option>
                         @endforeach
                     </select>

@@ -31,6 +31,7 @@ Route::prefix('admin')->name('admin.')->middleware(AdminAuth::class)->group(func
 
     // Pendaftaran
     Route::get('pendaftaran', [Admin\PendaftaranController::class, 'index'])->name('pendaftaran.index');
+    Route::get('pendaftaran/export', [Admin\PendaftaranController::class, 'export'])->name('pendaftaran.export');
     Route::get('pendaftaran/{pendaftaran}', [Admin\PendaftaranController::class, 'show'])->name('pendaftaran.show');
     Route::patch('pendaftaran/{pendaftaran}/status', [Admin\PendaftaranController::class, 'updateStatus'])->name('pendaftaran.status');
     Route::delete('pendaftaran/{pendaftaran}', [Admin\PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');

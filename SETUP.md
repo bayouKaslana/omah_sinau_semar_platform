@@ -106,3 +106,26 @@ php artisan serve
 - Foto galeri yang sudah ada di `public/image/` otomatis di-seed
 - Upload foto baru di Admin → Galeri akan disimpan di `storage/app/public/galeri/`
 - Jalankan `php artisan storage:link` agar foto yang diupload bisa tampil
+
+---
+
+## 📦 Install Package Excel (wajib untuk Export)
+
+Jalankan perintah ini di folder proyek:
+```bash
+composer require maatwebsite/excel
+```
+
+Setelah install, tambahkan di `config/app.php` bagian `providers`:
+```php
+Maatwebsite\Excel\ExcelServiceProvider::class,
+```
+Dan bagian `aliases`:
+```php
+'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+```
+
+Atau jalankan:
+```bash
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider"
+```

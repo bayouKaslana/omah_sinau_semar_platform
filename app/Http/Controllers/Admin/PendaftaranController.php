@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PendaftaranExport;
 use App\Http\Controllers\Controller;
+use App\Models\Lomba;
 use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PendaftaranController extends Controller
 {
@@ -20,12 +23,24 @@ class PendaftaranController extends Controller
         }
 
         $pendaftaran = $query->latest()->paginate(20);
-        return view('admin.pendaftaran.index', compact('pendaftaran'));
+        $lombaList   = Lomba::orderBy('nama')->get();
+
+        return view('admin.pendaftaran.index', compact('pendaftaran', 'lombaList'));
     }
 
     public function show(Pendaftaran $pendaftaran)
     {
-        return view('admin.pendaftaran.show', compact('pendaftaran'));
+        // Buat WA link untuk konfirmasi ke peserta
+        $pesan = urlencode(
+            "Halo *{$pendaftaran->nama_peserta}*! 👋\n\n" .
+            "Kami dari *Mitra Prestasi* ingin menginformasikan bahwa pendaftaran Anda untuk lomba:\n" .
+            "*{$pendaftaran->lomba->nama}*\n\n" .
+            "Status: *{$pendaftaran->status_label}*\n\n" .
+            "Terima kasih telah mendaftar! 🏆"
+        );
+        $waLink = "https://wa.me/{$pendaftaran->no_hp}?text={$pesan}";
+
+        return view('admin.pendaftaran.show', compact('pendaftaran', 'waLink'));
     }
 
     public function updateStatus(Request $request, Pendaftaran $pendaftaran)
@@ -39,5 +54,12 @@ class PendaftaranController extends Controller
     {
         $pendaftaran->delete();
         return redirect()->route('admin.pendaftaran.index')->with('success', 'Data pendaftaran dihapus!');
+    }
+
+    public function export(Request $request)
+    {
+        $lomba_id  = $request->lomba_id ?? null;
+        $namaFile  = 'pendaftaran-' . now()->format('d-m-Y') . '.xlsx';
+        return Excel::download(new PendaftaranExport($lomba_id), $namaFile);
     }
 }

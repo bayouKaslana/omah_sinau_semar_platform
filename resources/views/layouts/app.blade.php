@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -269,6 +269,75 @@
     .contact-item:nth-child(2) { transition-delay: 100ms !important; }
     .contact-item:nth-child(3) { transition-delay: 200ms !important; }
 
+
+    /* ── DARK MODE ──────────────────────────────────── */
+    :root {
+        --bg-primary:   #ffffff;
+        --bg-secondary: #f8fafc;
+        --bg-card:      #ffffff;
+        --text-primary: #1e293b;
+        --text-muted:   #64748b;
+        --border-color: #e2e8f0;
+        --navbar-bg:    rgba(255,255,255,0.95);
+        --section-alt:  #f8fafc;
+        --footer-bg:    #1e293b;
+    }
+    [data-theme="dark"] {
+        --bg-primary:   #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card:      #1e293b;
+        --text-primary: #f1f5f9;
+        --text-muted:   #94a3b8;
+        --border-color: #334155;
+        --navbar-bg:    rgba(15,23,42,0.97);
+        --section-alt:  #1e293b;
+        --footer-bg:    #020617;
+    }
+    [data-theme="dark"] body          { background: var(--bg-primary); color: var(--text-primary); }
+    [data-theme="dark"] .competition-card,
+    [data-theme="dark"] .blog-card,
+    [data-theme="dark"] .contact-form-wrapper,
+    [data-theme="dark"] .legal-card   { background: var(--bg-card) !important; border-color: var(--border-color) !important; color: var(--text-primary); }
+    [data-theme="dark"] .form-control { background: #0f172a; border-color: var(--border-color); color: var(--text-primary); }
+    [data-theme="dark"] .form-control:focus { background: #0f172a; color: #fff; }
+    [data-theme="dark"] .form-control::placeholder { color: #475569; }
+    [data-theme="dark"] .gallery-section,
+    [data-theme="dark"] .profil-section,
+    [data-theme="dark"] .kontak-section  { background: var(--bg-primary); }
+    [data-theme="dark"] .competition-section,
+    [data-theme="dark"] .blog-section    { background: var(--bg-secondary); }
+    [data-theme="dark"] .section-title   { color: var(--text-primary); }
+    [data-theme="dark"] .section-description,
+    [data-theme="dark"] .profil-text,
+    [data-theme="dark"] .kontak-description { color: var(--text-muted); }
+    [data-theme="dark"] .blog-title a    { color: var(--text-primary); }
+    [data-theme="dark"] .blog-excerpt    { color: var(--text-muted); }
+    [data-theme="dark"] .competition-title { color: var(--text-primary); }
+    [data-theme="dark"] #mainNav        { background: var(--navbar-bg) !important; border-bottom: 1px solid var(--border-color); }
+    [data-theme="dark"] .nav-link        { color: var(--text-primary) !important; }
+    [data-theme="dark"] .footer-section  { background: var(--footer-bg); }
+    [data-theme="dark"] .contact-item .contact-label,
+    [data-theme="dark"] .contact-item .contact-value { color: var(--text-primary); }
+    [data-theme="dark"] .legal-number   { color: var(--text-primary); }
+    [data-theme="dark"] .profil-mission ul li { color: var(--text-muted); }
+    [data-theme="dark"] .hero-section   { background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e3a5f 100%); }
+
+    /* Toggle Button */
+    .dark-toggle {
+        background: none;
+        border: 1.5px solid rgba(255,255,255,.3);
+        color: inherit;
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: .2s;
+        margin-left: .5rem;
+    }
+    .dark-toggle:hover { background: rgba(255,255,255,.15); }
+    [data-theme="dark"] .dark-toggle { border-color: rgba(255,255,255,.2); }
+
     </style>
 </head>
 <body>
@@ -525,5 +594,34 @@
     </script>
     
     @stack('scripts')
+
+    <script>
+    // ── DARK MODE ──────────────────────────────────────
+    const html      = document.documentElement;
+    const toggleBtn = document.getElementById('darkToggle');
+    const icon      = document.getElementById('darkIcon');
+
+    // Load saved preference
+    const saved = localStorage.getItem('theme') || 'light';
+    setTheme(saved);
+
+    toggleBtn.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        localStorage.setItem('theme', next);
+    });
+
+    function setTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        if (theme === 'dark') {
+            icon.className = 'bi bi-sun-fill';
+            toggleBtn.style.color = '#fbbf24';
+        } else {
+            icon.className = 'bi bi-moon-fill';
+            toggleBtn.style.color = '';
+        }
+    }
+    </script>
+
 </body>
 </html>
