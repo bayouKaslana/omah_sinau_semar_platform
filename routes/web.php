@@ -12,7 +12,16 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/lomba/{lomba}', [LombaController::class, 'show'])->name('lomba.show');
 Route::post('/lomba/{lomba}/daftar', [LombaController::class, 'daftar'])->name('lomba.daftar');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/publikasi', [\App\Http\Controllers\PublikasiController::class, 'index'])->name('publikasi.index');
+
 Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
+
+
+// ── PAYMENT ────────────────────────────────────────────────────────────
+Route::get('/payment/{pendaftaran}/pay', [\App\Http\Controllers\PaymentController::class, 'pay'])->name('payment.pay');
+Route::post('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
+Route::get('/payment/success', [\App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/failed', [\App\Http\Controllers\PaymentController::class, 'failed'])->name('payment.failed');
 
 // ── ADMIN AUTH (tidak perlu login) ─────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -38,6 +47,13 @@ Route::prefix('admin')->name('admin.')->middleware(AdminAuth::class)->group(func
 
     // Blog
     Route::resource('blog', Admin\BlogController::class);
+
+    // Peserta & Publikasi
+    Route::get('peserta/import', [Admin\PesertaController::class, 'importForm'])->name('peserta.import.form');
+    Route::post('peserta/import', [Admin\PesertaController::class, 'import'])->name('peserta.import');
+    Route::post('peserta/publish-all', [Admin\PesertaController::class, 'publishAll'])->name('peserta.publish-all');
+    Route::post('peserta/unpublish-all', [Admin\PesertaController::class, 'unpublishAll'])->name('peserta.unpublish-all');
+    Route::resource('peserta', Admin\PesertaController::class);
 
     // Galeri
     Route::get('galeri', [Admin\GaleriController::class, 'index'])->name('galeri.index');
