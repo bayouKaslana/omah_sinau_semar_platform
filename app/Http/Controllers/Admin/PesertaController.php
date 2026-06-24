@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Peserta;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PesertaController extends Controller
 {
@@ -40,7 +39,7 @@ class PesertaController extends Controller
         ]);
 
         Peserta::create($request->only([
-            'no_peserta','nama','asal_sekolah','mapel','tingkat','kelas','ruang'
+            'no_peserta','nama','asal_sekolah','mapel','tingkat','kelas','level'
         ]));
 
         return redirect()->route('admin.peserta.index')
@@ -63,7 +62,7 @@ class PesertaController extends Controller
         ]);
 
         $peserta->update($request->only([
-            'no_peserta','nama','asal_sekolah','mapel','tingkat','kelas','ruang'
+            'no_peserta','nama','asal_sekolah','mapel','tingkat','kelas','level'
         ]));
 
         return redirect()->route('admin.peserta.index')
@@ -77,7 +76,25 @@ class PesertaController extends Controller
             ->with('success', 'Peserta dihapus!');
     }
 
-    // Publish/unpublish semua sekaligus
+    public function destroySelected(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada peserta yang dipilih!');
+        }
+        $count = Peserta::whereIn('id', $ids)->delete();
+        return redirect()->route('admin.peserta.index')
+            ->with('success', "{$count} peserta berhasil dihapus!");
+    }
+
+    public function destroyAll()
+    {
+        $count = Peserta::count();
+        Peserta::query()->delete();
+        return redirect()->route('admin.peserta.index')
+            ->with('success', "Semua {$count} peserta berhasil dihapus!");
+    }
+
     public function publishAll()
     {
         Peserta::query()->update(['is_published' => true]);
@@ -90,7 +107,6 @@ class PesertaController extends Controller
         return redirect()->back()->with('success', 'Publikasi disembunyikan!');
     }
 
-    // Import dari Excel
     public function importForm()
     {
         return view('admin.peserta.import');
@@ -110,7 +126,6 @@ class PesertaController extends Controller
             foreach ($data->getAllSheets() as $sheet) {
                 $rows = $sheet->toArray();
 
-                // Cari baris header (yang ada NO PESERTA)
                 $headerRow = null;
                 foreach ($rows as $i => $row) {
                     if (in_array('NO PESERTA', array_map('strtoupper', array_filter($row)))) {
@@ -120,25 +135,25 @@ class PesertaController extends Controller
                 }
                 if ($headerRow === null) continue;
 
-                $headers = array_map('strtoupper', $rows[$headerRow]);
-                $noCol    = array_search('NO PESERTA', $headers);
-                $namaCol  = array_search('NAMA', $headers);
+                $headers    = array_map('strtoupper', $rows[$headerRow]);
+                $noCol      = array_search('NO PESERTA', $headers);
+                $namaCol    = array_search('NAMA', $headers);
                 $sekolahCol = array_search('ASAL SEKOLAH', $headers);
-                $mapelCol = array_search('MAPEL', $headers);
-                $lvCol    = array_search('LV', $headers);
-                $ruangCol = null;
-                // cari RUANG di baris atas header
-                foreach ($rows as $i => $row) {
+                $mapelCol   = array_search('MAPEL', $headers);
+                $lvCol      = array_search('LV', $headers);
+                $levelVal   = null;
+
+                foreach ($rows as $row) {
                     foreach ($row as $cell) {
-                        if (str_contains(strtoupper((string)$cell), 'RUANG :') || str_contains(strtoupper((string)$cell), 'RUANG:')) {
-                            preg_match('/RUANG\s*:\s*(\d+)/i', (string)$cell, $m);
-                            $ruangVal = isset($m[1]) ? 'Ruang ' . $m[1] : null;
+                        if (str_contains(strtoupper((string)$cell), 'LEVEL :') || str_contains(strtoupper((string)$cell), 'LEVEL:')) {
+                            preg_match('/LEVEL\s*:\s*(\d+)/i', (string)$cell, $m);
+                            $levelVal = isset($m[1]) ? 'Level ' . $m[1] : null;
                         }
                     }
                 }
 
                 for ($r = $headerRow + 1; $r < count($rows); $r++) {
-                    $row = $rows[$r];
+                    $row       = $rows[$r];
                     $noPeserta = trim($row[$noCol] ?? '');
                     $nama      = trim($row[$namaCol] ?? '');
 
@@ -151,7 +166,7 @@ class PesertaController extends Controller
                             'asal_sekolah' => trim($row[$sekolahCol] ?? ''),
                             'mapel'        => trim($row[$mapelCol] ?? ''),
                             'tingkat'      => trim($row[$lvCol] ?? ''),
-                            'ruang'        => $ruangVal ?? null,
+                            'level'        => $levelVal,
                             'is_published' => false,
                         ]
                     );

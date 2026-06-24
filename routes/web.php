@@ -26,8 +26,12 @@ Route::get('/payment/failed', [\App\Http\Controllers\PaymentController::class, '
 // ── ADMIN AUTH (tidak perlu login) ─────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [Admin\AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [Admin\AuthController::class, 'login'])->name('login.post');
+    Route::post('/login', [Admin\AuthController::class, 'login'], ['middleware' => 'throttle:10,1'])->name('login.post');
     Route::post('/logout', [Admin\AuthController::class, 'logout'])->name('logout');
+
+    // OTP
+    Route::get('/otp', [Admin\AuthController::class, 'showOtpForm'])->name('otp.form');
+    Route::post('/otp', [Admin\AuthController::class, 'verifyOtp'], ['middleware' => 'throttle:5,1'])->name('otp.verify');
 });
 
 // ── ADMIN PANEL (wajib login) ───────────────────────────────────────────
@@ -53,6 +57,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminAuth::class)->group(func
     Route::post('peserta/import', [Admin\PesertaController::class, 'import'])->name('peserta.import');
     Route::post('peserta/publish-all', [Admin\PesertaController::class, 'publishAll'])->name('peserta.publish-all');
     Route::post('peserta/unpublish-all', [Admin\PesertaController::class, 'unpublishAll'])->name('peserta.unpublish-all');
+    Route::delete('peserta/destroy-all', [Admin\PesertaController::class, 'destroyAll'])->name('peserta.destroy-all');
+    Route::delete('peserta/destroy-selected', [Admin\PesertaController::class, 'destroySelected'])->name('peserta.destroy-selected');
     Route::resource('peserta', Admin\PesertaController::class, ['parameters' => ['peserta' => 'peserta']]);
 
     // Galeri
@@ -60,4 +66,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminAuth::class)->group(func
     Route::post('galeri', [Admin\GaleriController::class, 'store'])->name('galeri.store');
     Route::delete('galeri/{galeri}', [Admin\GaleriController::class, 'destroy'])->name('galeri.destroy');
     Route::patch('galeri/{galeri}/toggle', [Admin\GaleriController::class, 'toggleActive'])->name('galeri.toggle');
+
+    // Admin Management
+    Route::get('register', [Admin\AuthController::class, 'showRegister'])->name('register');
+    Route::post('register', [Admin\AuthController::class, 'register'])->name('register.store');
 });

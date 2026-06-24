@@ -56,7 +56,12 @@ class PublikasiController extends Controller
                 });
 
             $hasil = $dariPeserta->merge($dariPendaftaran)
-                ->unique(fn($item) => strtolower($item['nama']) . '|' . strtolower($item['asal_sekolah'] ?? ''))
+                ->unique(fn($item) =>
+                    strtolower($item['nama']) . '|' .
+                    strtolower($item['asal_sekolah'] ?? '') . '|' .
+                    strtolower($item['mapel'] ?? '') . '|' .
+                    ($item['no_peserta'] ?? '')
+                )
                 ->values();
         }
 

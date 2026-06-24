@@ -61,6 +61,15 @@ class BlogController extends Controller
 
     private function validateBlog(Request $request): array
     {
+        // Strip HTML tags untuk cek apakah isi benar-benar ada teksnya
+        $isiRaw   = $request->input('isi', '');
+        $isiStrip = trim(strip_tags($isiRaw));
+
+        // Kalau isi kosong atau cuma whitespace/HTML kosong, set ke null agar validasi 'required' gagal dengan pesan yang benar
+        if ($isiStrip === '') {
+            $request->merge(['isi' => null]);
+        }
+
         return $request->validate([
             'judul'       => 'required|string|max:255',
             'isi'         => 'required|string',

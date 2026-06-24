@@ -32,7 +32,7 @@
                     <label class="form-label fw-semibold">Tingkat</label>
                     <select name="tingkat" class="form-select">
                         <option value="">-- Pilih --</option>
-                        @foreach(['tk','sd','smp'] as $t)
+                        @foreach(['tk','LEVEL 1','LEVEL 2','LEVEL 3','LEVEL 4'] as $t)
                             <option value="{{ $t }}" {{ old('tingkat', $lomba->tingkat ?? '') === $t ? 'selected' : '' }}>{{ strtoupper($t) }}</option>
                         @endforeach
                     </select>

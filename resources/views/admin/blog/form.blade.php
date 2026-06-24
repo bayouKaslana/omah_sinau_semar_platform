@@ -31,7 +31,7 @@
 @section('content')
 <div class="card shadow-sm" style="max-width:900px;">
     <div class="card-body p-4">
-        <form action="{{ isset($blog) ? route('admin.blog.update', $blog) : route('admin.blog.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="blogForm" action="{{ isset($blog) ? route('admin.blog.update', $blog) : route('admin.blog.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if(isset($blog)) @method('PUT') @endif
 
@@ -138,20 +138,20 @@ if (existing) {
     quill.root.innerHTML = existing;
 }
 
-// Sync ke hidden input sebelum form submit
-document.querySelector('form').addEventListener('submit', function() {
-    document.getElementById('isiInput').value = quill.root.innerHTML;
-});
+// Sync & validasi dalam satu listener
+document.getElementById('blogForm').addEventListener('submit', function(e) {
+    const html = quill.root.innerHTML;
+    const text = html.replace(/<[^>]*>/g, '').trim();
 
-// Validasi tidak boleh kosong
-document.querySelector('form').addEventListener('submit', function(e) {
-    const val = quill.root.innerHTML.replace(/<[^>]*>/g, '').trim();
-    if (!val) {
+    if (!text) {
         e.preventDefault();
         quill.root.style.border = '1.5px solid #ef4444';
         quill.root.focus();
         alert('Isi artikel tidak boleh kosong!');
+        return;
     }
+
+    document.getElementById('isiInput').value = html;
 });
 </script>
 @endpush

@@ -279,6 +279,10 @@
         </a>
 
         <div class="sidebar-section">Lainnya</div>
+        <a href="{{ route('admin.register') }}" 
+           class="nav-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
+           <i class="bi bi-person-plus-fill"></i> Tambah Admin
+        </a>
         <a href="{{ url('/') }}" class="nav-link" target="_blank">
             <i class="bi bi-box-arrow-up-right"></i> Lihat Website
         </a>

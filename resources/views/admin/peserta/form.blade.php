@@ -43,7 +43,7 @@
                     <label class="form-label fw-semibold">Tingkat *</label>
                     <select name="tingkat" class="form-select" required>
                         <option value="">-- Pilih --</option>
-                        @foreach(['TK','SD','SMP'] as $t)
+                        @foreach(['TK','LEVEL 1','LEVEL 2','LEVEL 3','LEVEL 4'] as $t)
                             <option value="{{ $t }}" {{ old('tingkat', $peserta->tingkat ?? '') === $t ? 'selected' : '' }}>{{ $t }}</option>
                         @endforeach
                     </select>
@@ -53,12 +53,6 @@
                     <input type="text" name="kelas" class="form-control"
                         value="{{ old('kelas', $peserta->kelas ?? '') }}"
                         placeholder="1, 2, ...">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Level</label>
-                    <input type="text" name="ruang" class="form-control"
-                        value="{{ old('ruang', $peserta->ruang ?? '') }}"
-                        placeholder="Contoh: Level 1">
                 </div>
             </div>
 
