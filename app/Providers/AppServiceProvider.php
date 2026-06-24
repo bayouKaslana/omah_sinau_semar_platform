@@ -12,9 +12,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Pluralizer::useLanguage('english');
-
-        // Daftarkan irregular plural secara eksplisit
-        Pluralizer::irregular('peserta', 'peserta');
-        Pluralizer::irregular('lomba', 'lomba');
     }
 }

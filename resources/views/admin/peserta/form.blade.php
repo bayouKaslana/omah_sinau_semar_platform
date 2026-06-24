@@ -4,7 +4,7 @@
 @section('content')
 <div class="card shadow-sm" style="max-width:600px;">
     <div class="card-body p-4">
-        <form action="{{ isset($peserta) ? route('admin.peserta.update', $peserta) : route('admin.peserta.store') }}" method="POST">
+       <form action="{{ isset($peserta) ? route('admin.peserta.update', ['peserta' => $peserta->id]) : route('admin.peserta.store') }}" method="POST">
             @csrf
             @if(isset($peserta)) @method('PUT') @endif
 
@@ -40,7 +40,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold">Tingkat *</label>
+                    <label class="form-label fw-semibold">Level *</label>
                     <select name="tingkat" class="form-select" required>
                         <option value="">-- Pilih --</option>
                         @foreach(['TK','SD','SMP'] as $t)

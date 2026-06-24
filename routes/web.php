@@ -53,7 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware(AdminAuth::class)->group(func
     Route::post('peserta/import', [Admin\PesertaController::class, 'import'])->name('peserta.import');
     Route::post('peserta/publish-all', [Admin\PesertaController::class, 'publishAll'])->name('peserta.publish-all');
     Route::post('peserta/unpublish-all', [Admin\PesertaController::class, 'unpublishAll'])->name('peserta.unpublish-all');
-    Route::resource('peserta', Admin\PesertaController::class);
+    Route::resource('peserta', Admin\PesertaController::class, ['parameters' => ['peserta' => 'peserta']]);
 
     // Galeri
     Route::get('galeri', [Admin\GaleriController::class, 'index'])->name('galeri.index');
