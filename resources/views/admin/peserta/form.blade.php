@@ -40,7 +40,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold">Level *</label>
+                    <label class="form-label fw-semibold">Tingkat *</label>
                     <select name="tingkat" class="form-select" required>
                         <option value="">-- Pilih --</option>
                         @foreach(['TK','SD','SMP'] as $t)
@@ -55,10 +55,10 @@
                         placeholder="1, 2, ...">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Ruangan</label>
+                    <label class="form-label fw-semibold">Level</label>
                     <input type="text" name="ruang" class="form-control"
                         value="{{ old('ruang', $peserta->ruang ?? '') }}"
-                        placeholder="Contoh: Ruang 1">
+                        placeholder="Contoh: Level 1">
                 </div>
             </div>
 

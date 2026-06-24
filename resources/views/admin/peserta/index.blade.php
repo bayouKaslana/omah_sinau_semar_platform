@@ -81,8 +81,8 @@
                     <th>Nama</th>
                     <th>Asal Sekolah</th>
                     <th>Mapel</th>
+                    <th>Tingkat</th>
                     <th>Level</th>
-                    <th>Ruang</th>
                     <th>Publik</th>
                     <th>Aksi</th>
                 </tr>

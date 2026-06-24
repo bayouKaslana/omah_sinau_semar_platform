@@ -30,17 +30,36 @@ class PendaftaranController extends Controller
 
     public function show(Pendaftaran $pendaftaran)
     {
-        // Buat WA link untuk konfirmasi ke peserta
-        $pesan = urlencode(
+        // ===== PESAN 1: STATUS PENDAFTARAN =====
+        $pesanStatus = urlencode(
             "Halo *{$pendaftaran->nama_peserta}*! 👋\n\n" .
-            "Kami dari *Mitra Prestasi* ingin menginformasikan bahwa pendaftaran Anda untuk lomba:\n" .
+            "Kami dari *Omah Sinau Semar* ingin menginformasikan bahwa pendaftaran Anda untuk lomba:\n" .
             "*{$pendaftaran->lomba->nama}*\n\n" .
             "Status: *{$pendaftaran->status_label}*\n\n" .
             "Terima kasih telah mendaftar! 🏆"
         );
-        $waLink = "https://wa.me/{$pendaftaran->no_hp}?text={$pesan}";
 
-        return view('admin.pendaftaran.show', compact('pendaftaran', 'waLink'));
+        // ===== PESAN 2: PEMBAYARAN =====
+        $pesanBayar = urlencode(
+            "Halo *{$pendaftaran->nama_peserta}*! 👋\n\n" .
+            "Terima kasih telah mendaftar di *Omah Sinau Semar* untuk lomba:\n" .
+            "*{$pendaftaran->lomba->nama}*\n\n" .
+            "📋 *DATA PENDAFTARAN:*\n" .
+            "Nama: *{$pendaftaran->nama_peserta}*\n" .
+            "Sekolah: *{$pendaftaran->asal_sekolah}*\n\n" .
+            "💰 *SILAHKAN LAKUKAN PEMBAYARAN*\n" .
+            "Hubungi admin untuk detail pembayaran dan nomor rekening.\n\n" .
+            "Terima kasih! ❤️"
+        );
+
+        // Format nomor WA (0812... → 62812...)
+        $noHp = preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pendaftaran->no_hp));
+
+        // Generate WA links
+        $waLinkStatus = "https://wa.me/{$noHp}?text={$pesanStatus}";
+        $waLinkBayar = "https://wa.me/{$noHp}?text={$pesanBayar}";
+
+        return view('admin.pendaftaran.show', compact('pendaftaran', 'waLinkStatus', 'waLinkBayar'));
     }
 
     public function updateStatus(Request $request, Pendaftaran $pendaftaran)
