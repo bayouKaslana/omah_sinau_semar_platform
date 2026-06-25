@@ -70,4 +70,6 @@ Route::prefix('admin')->name('admin.')->middleware(AdminAuth::class)->group(func
     // Admin Management
     Route::get('register', [Admin\AuthController::class, 'showRegister'])->name('register');
     Route::post('register', [Admin\AuthController::class, 'register'])->name('register.store');
+    Route::get('admin-list', [Admin\AuthController::class, 'adminList'])->name('admin-list.index');
+    Route::delete('admin-list/{id}', [Admin\AuthController::class, 'destroyAdmin'])->name('admin-list.destroy');
 });

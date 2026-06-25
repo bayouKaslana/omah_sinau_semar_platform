@@ -122,4 +122,23 @@ class AuthController extends Controller
                          ->with('success', 'Admin baru berhasil didaftarkan!');
     }
 
+    public function adminList()
+    {
+        $admins = User::where('role', 'admin')->orderBy('created_at')->get();
+        return view('admin.auth.list', compact('admins'));
+    }
+
+    public function destroyAdmin(Request $request, $id)
+    {
+        $admin = User::where('id', $id)->where('role', 'admin')->firstOrFail();
+
+        // Tidak bisa hapus diri sendiri
+        if ($admin->email === session('admin_email')) {
+            return back()->with('error', 'Tidak Bisa Menghapus Akun Sendiri.');
+        }
+
+        $admin->delete();
+        return back()->with('success', 'Admin ' . $admin->name . ' berhasil dihapus.');
+    }
+
 }

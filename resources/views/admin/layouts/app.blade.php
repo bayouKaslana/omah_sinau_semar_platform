@@ -27,6 +27,7 @@
             background: linear-gradient(180deg, var(--sidebar-bg-top), var(--sidebar-bg-bot));
             position: fixed; top: 0; left: 0; z-index: 1000;
             display: flex; flex-direction: column;
+            overflow: hidden;
         }
         .sidebar-brand {
             padding: 1.25rem 1.5rem;
@@ -49,7 +50,7 @@
         .sidebar-brand-text h5 { color: #fff; margin: 0; font-weight: 800; font-size: 0.95rem; line-height: 1.2; }
         .sidebar-brand-text small { color: rgba(255,255,255,.55); font-size: 0.72rem; }
 
-        .sidebar nav { flex: 1; padding: 8px 0; overflow-y: auto; }
+        .sidebar nav { flex: 1; padding: 8px 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
         .sidebar .nav-link {
             color: rgba(255,255,255,.72);
             padding: .65rem 1.5rem;
@@ -279,6 +280,10 @@
         </a>
 
         <div class="sidebar-section">Lainnya</div>
+        <a href="{{ route('admin.admin-list.index') }}"
+           class="nav-link {{ request()->routeIs('admin.admin-list*') ? 'active' : '' }}">
+            <i class="bi bi-people-fill"></i> Daftar Admin
+        </a>
         <a href="{{ route('admin.register') }}" 
            class="nav-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
            <i class="bi bi-person-plus-fill"></i> Tambah Admin
