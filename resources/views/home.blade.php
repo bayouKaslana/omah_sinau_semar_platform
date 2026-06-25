@@ -784,10 +784,10 @@ $galeriJson = $galeri->map(fn($f) => [
                     </div>
                 </div>
                 <div class="social-links">
-                    <a href="#" class="social-link whatsapp" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                    <a href="https://wa.me/6281246588802" class="social-link whatsapp" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
                     <a href="#" class="social-link instagram" title="Instagram"><i class="bi bi-instagram"></i></a>
                     <a href="#" class="social-link youtube" title="YouTube"><i class="bi bi-youtube"></i></a>
-                    <a href="#" class="social-link email" title="Email"><i class="bi bi-envelope-fill"></i></a>
+                    <a href="mailto:omahsinausemar@gmail.com" class="social-link email" title="Email"><i class="bi bi-envelope-fill"></i></a>
                 </div>
             </div>
             <div class="col-lg-6">
